@@ -29,9 +29,19 @@ public abstract class AbstractRegExFunction extends Function {
 	
 	protected static boolean matches(String pattern, String flags, String src) {
 		boolean fnd = false;
-		if (pattern.indexOf("-[") != -1) {
+		
+		/*if (pattern.indexOf("-[") != -1) {
 			pattern = pattern.replaceAll("\\-\\[", "&&[^");
+		} */
+		int indx1 = pattern.indexOf("-[");
+		if (indx1 != -1) {
+			String subsPrev = pattern.substring(0, indx1);
+			String subsAfter = pattern.substring(indx1 + 2);
+			if ((subsPrev.indexOf("[") != -1) && (subsAfter.indexOf("]]") != -1)) {
+				pattern = pattern.replaceAll("\\-\\[", "&&[^");	
+			}
 		}
+		
 		Matcher m = compileAndExecute(pattern, flags, src);
 		while (m.find()) {
 			fnd = true;
